@@ -1,0 +1,9 @@
+diff a/jMetalPy-master/examples/singleobjective/nsgaii/Optimizer_GUI.py b/jMetalPy-master/examples/singleobjective/nsgaii/Optimizer_GUI.py	(rejected hunks)
+@@ -135,6 +135,7 @@
+ 
+ 
+ 
++        distance = distance + R + R_diviation
+         #print(distance)
+ 
+ 
