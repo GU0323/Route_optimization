@@ -2,8 +2,6 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 from jmetal.algorithm.multiobjective.nsgaii import NSGAII
@@ -28,6 +26,8 @@ form_ui = uic.loadUiType("optimizer_route.ui")[0]
 
 maze = map_array.map
 
+
+'''
 Con = np.where(maze > 0)
 
 
@@ -38,7 +38,7 @@ column_list = COLUMN.tolist()
 index_list2 = []
 column_list2 = []
 
-e = 1
+
 
 
 for i in range(len(index_list)):
@@ -49,11 +49,11 @@ for i in range(len(index_list)):
 for i in range(len(column_list)):
     column_value = column_list[i] + e
     column_list2.append(column_value)
-
+'''
 
 class Linear4(FloatProblem):
 
-    def __init__(self, number_of_variables, x1, x2, y1, y2, index_list2, column_list2, lowerbound_v, lowerbound_t, upperbound_v, upperbound_t):
+    def __init__(self, number_of_variables, x1, x2, y1, y2, lowerbound_v, lowerbound_t, upperbound_v, upperbound_t):
         super(Linear4, self).__init__()
         self.number_of_objectives = 1
         self.number_of_variables = number_of_variables
@@ -61,8 +61,6 @@ class Linear4(FloatProblem):
         self.obj_directions = [self.MINIMIZE]
         self.lower_bound = [lowerbound_v, lowerbound_t] * (int(number_of_variables / 2))
         self.upper_bound = [upperbound_v, upperbound_t] * (int(number_of_variables / 2))
-        self.index_list = index_list2
-        self.column_list = column_list2
         self.Px_departure = x1
         self.Py_departure = y1
         self.Px_arrival = x2
@@ -141,12 +139,18 @@ class Linear4(FloatProblem):
         x.append(Px_arrival)
         y.append(Py_arrival)
 
-
-
         for i in range(int(solution.number_of_variables / 2)):
-            if round(x[i + 1]) in self.column_list and round(1799 - y[i + 1]) in self.index_list or (1799 - y[i + 1]) >= 1800 or (1799 - y[i + 1]) < 0 or (3599 < x[i + 1]):
 
+            # if maze[int(1799-y[i+1]-1)][int(x[i+1]-1)] == 1:
+
+            # if maze[int(1799-y[i+1]-1)][int(x[i+1]-1)] == 1:
+
+
+            if maze[int(1799 - y[i + 1] + 1)][int(x[i + 1] + 1)] == 1 or maze[int(1799 - y[i + 1] - 1)][int(x[i + 1] - 1)] == 1 or maze[int(1799 - y[i + 1])][int(x[i + 1])] == 1 or \
+                    maze[int(1799 - y[i + 1] + 2)][int(x[i + 1] + 2)] == 1 or maze[int(1799 - y[i + 1] - 2)][int(x[i + 1] - 2)]:
                 constraints[i] = -100
+
+            # if round(x[i + 1]) in self.column_list and round(1799 - y[i + 1]) in self.index_list or (1799 - y[i + 1]) >= 1800 or (1799 - y[i + 1]) < 0 or (1799 < x[i + 1]):
 
         solution.constraints = constraints
 
@@ -232,7 +236,7 @@ class MyWindow(QMainWindow, form_ui):
         self.lines = []
         self.point = ()
 
-        problem = Linear4(self.Node, self.departure_lon, self.arrival_lon, self.departure_lat, self.arrival_lat, index_list2, column_list2, self.lower_bound_v, self.lower_bound_t, self.upper_bound_v, self.upper_bound_t)
+        problem = Linear4(self.Node, self.departure_lon, self.arrival_lon, self.departure_lat, self.arrival_lat, self.lower_bound_v, self.lower_bound_t, self.upper_bound_v, self.upper_bound_t)
 
         max_evaluations = self.max_evaluations
         algorithm = NSGAII(
