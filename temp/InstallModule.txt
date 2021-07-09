@@ -1,0 +1,11 @@
+conda create -n NAME python=3.8
+
+pip install pillow
+conda install opencv
+pip install pyshp
+pip install pngcanvas
+pip install folium
+pip install matplotlib
+pip install pyqt5
+pip install pyqtwebengine
+pip install jmetalpy
