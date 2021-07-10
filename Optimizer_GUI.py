@@ -14,8 +14,6 @@ import map_array
 import io
 import folium
 
-
-
 from math import sqrt, cos, sin, atan, acos, pi
 
 from jmetal.core.problem import BinaryProblem, FloatProblem
