@@ -146,8 +146,8 @@
     <widget class="QPushButton" name="start_button">
      <property name="geometry">
       <rect>
-       <x>4</x>
-       <y>27</y>
+       <x>5</x>
+       <y>33</y>
        <width>151</width>
        <height>61</height>
       </rect>
@@ -162,7 +162,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
-image:url(D:/Optimizer_route/jMetalPy-master/examples/singleobjective/nsgaii/start..png)
+image:url(D:/Route_optimizer/GUI/Start_button.png)
 </string>
      </property>
      <property name="text">
@@ -201,7 +201,7 @@ image:url(D:/Optimizer_route/jMetalPy-master/examples/singleobjective/nsgaii/sta
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
-image:url(D:/Optimizer_route/jMetalPy-master/examples/singleobjective/nsgaii/mapcontrol.png)
+image:url(D:/Route_optimizer/GUI/mapcontrol.png)
 </string>
      </property>
      <property name="text">
@@ -238,7 +238,7 @@ image:url(D:/Optimizer_route/jMetalPy-master/examples/singleobjective/nsgaii/map
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
-image:url(D:/Optimizer_route/jMetalPy-master/examples/singleobjective/nsgaii/wheathercontrol.png)</string>
+image:url(D:/Route_optimizer/GUI/wheathercontrol.png)</string>
      </property>
      <property name="text">
       <string/>
