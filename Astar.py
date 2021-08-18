@@ -1,13 +1,18 @@
-# Time Complexity는 H에 따라 다르다.
-# O(b^d), where d = depth, b = 각 노드의 하위 요소 수
-# heapque를 이용하면 길을 출력할 때 reverse를 안해도 됨
-import sys
-import io
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-import folium
-import map_array
+from vincenty import vincenty
+from tensorflow.keras.models import load_model
+import numpy as np
+import functions.jin_buk_theta
+import pandas as pd
+import joblib
 
+
+df = pd.read_excel('./Dataset/Weather_information2.xlsx',  header=0, sheet_name=None, engine='openpyxl')
+df_frame = pd.read_excel('./Dataset/test_astar11.xlsx', header=0, sheet_name=None, engine='openpyxl')
+input_df = df_frame['FOC']
+model = load_model("./Models/FOCModels14-1")
+scaler_filename = "./Models/FOCModels14-1" + "/scaler.save"
+scaler = joblib.load(scaler_filename)
+node1 = 0
 
 class Node:
     def __init__(self, parent=None, position=None):
@@ -29,6 +34,7 @@ def heuristic(node, goal, D=1, D2=2 ** 0.5):  # Diagonal Distance
 
 
 def aStar(maze, start, end):
+    global df, input_df, model, scaler, aaa
     # startNode와 endNode 초기화
     startNode = Node(None, start)
     endNode = Node(None, end)
@@ -66,14 +72,17 @@ def aStar(maze, start, end):
             while current is not None:
                 # maze 길을 표시하려면 주석 해제
                 # x, y = current.position
-                # maze[x][y] = 7 
+                # maze[x][y] = 7
                 path.append(current.position)
                 current = current.parent
             return path[::-1]  # reverse
 
         children = []
         # 인접한 xy좌표 전부
-        for newPosition in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+        for newPosition in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1)]:
+            #[(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1)]:
+            # (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1),
+            # (0, -2), (-2, 0), (2, 0), (-2, -2), (2, -2), (-2, -1), (-1, -2), (1, -2), (2, -1)
 
             # 노드 위치 업데이트
             nodePosition = (
@@ -92,7 +101,7 @@ def aStar(maze, start, end):
                 continue
 
             # 장애물이 있으면 다른 위치 불러오기
-            if maze[nodePosition[0]][nodePosition[1]] != 0:
+            if maze[nodePosition[0]][nodePosition[1]] == 0:
                 continue
 
             new_node = Node(currentNode, nodePosition)
@@ -106,95 +115,88 @@ def aStar(maze, start, end):
                 continue
 
             # f, g, h값 업데이트
-            child.g = currentNode.g + 1
-            child.h = ((child.position[0] - endNode.position[0]) **
-                       2) + ((child.position[1] - endNode.position[1]) ** 2)
-            # child.h = heuristic(child, endNode) 다른 휴리스틱
+            departure = -((startNode.position[0] - 399) / 10), ((startNode.position[1] + 1001) / 10)
+            arrival = -((endNode.position[0] - 399) / 10), ((endNode.position[1] + 1001) / 10)
+            end1 = -((child.position[0] - 399) / 10), ((child.position[1] + 1001) / 10)
+            start1 = -((currentNode.position[0] - 399) / 10), ((currentNode.position[1] + 1001) / 10)
+            distance = vincenty(start1, end1) * 2
+            speed = 15
+            Draught = 15
+            angle = functions.jin_buk_theta.jinbuk(start1[0], start1[1], end1[0], end1[1])
+            time = distance/(speed * 1.825)
+            times = int(((vincenty(departure, arrival) - vincenty(end1, arrival)) / (speed * 1.852)) / 6) +1
+            print(times)
+            first_data = df['Weatherdata%d' % times]
+            df2 = first_data.set_index('latitude & longitude')
+            input_df.iloc[[0],[0]] = speed
+            input_df.iloc[[0],[1]] = Draught
+            input_df.iloc[[0],[2]] = angle
+            input_df.iloc[[0],[3]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_speed']
+            input_df.iloc[[0],[4]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_Direction']
+            input_df.iloc[[0],[5]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Height']
+            input_df.iloc[[0],[6]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Direction']
+            input_df.iloc[[0],[7]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Frequency']
+            input_df.iloc[[0],[8]] = time
+
+            featureList = ['Speed2', 'Draught' , 'Course', 'WindSpeed', 'WindDirectionDeg', 'WaveHeight', 'WaveDirection', 'WavePeriod',
+                                'Time']
+
+            trainContinuous = scaler.transform(input_df[featureList])
+            testX = np.hstack([trainContinuous])
+            preds = model.predict(testX)
+            FOC_time = preds.flatten()
+            Foc = FOC_time * time
+
+            child.g = currentNode.g - Foc
+            # child.h = ((child.position[0] - endNode.position[0]) **
+            #            2) + ((child.position[1] - endNode.position[1]) ** 2)
+
+            child.h = vincenty(end1, arrival)
+            global node1
+            node1 = vincenty(start1, arrival)
+
+            # 다른 휴리스틱
             # print("position:", child.position) 거리 추정 값 보기
             # print("from child to goal:", child.h)
 
             child.f = child.g + child.h
 
+
+
             # 자식이 openList에 있으고, g값이 더 크면 continue
             if len([openNode for openNode in openList
                     if child == openNode and child.g > openNode.g]) > 0:
                 continue
-
             openList.append(child)
+
 
 Px = []
 Py = []
-def main():
-    # 1은 장애물
-    maze = map_array.map
-    #부산 출발
-    start_lat =129.627048
-    start_lon = 35.046118
-    #호치민 도착
-    end_lat = -6.335433
-    end_lon = 36.520274
+def main(departure_lon, departure_lat, arrival_lat, arrival_lon):
 
-    start = (899 - (int(start_lon*10)), 1799 + (int(start_lat*10)))
-    end = ( 899 - (int(end_lon*10)), 1799 + (int(end_lat*10)))
+    # 1은 장애물
+
+    maze = np.load('./resources/mapImage/local_map.npy')
+    #부산 출발
+    start_lat = departure_lon
+    start_lon = departure_lat
+    # 도착
+    end_lat = arrival_lon
+    end_lon = arrival_lat
+
+    start = -int((int(start_lon*10) -399)), int((int(start_lat*10) - 1001))
+    end = -int((int(end_lon*10) -399)), int((int(end_lat*10) - 1001))
 
     path = aStar(maze, start, end)
+
     for i in range(len(path)):
-        print(path[i])
-    for i in range(len(path)):
-        py = -(path[i][0] - 899) / 10
-        px = (path[i][1] - 1799) / 10
+        py = -((path[i][0]-399) / 10)
+        px = ((path[i][1]+1001) / 10)
         Px.append(px)
         Py.append(py)
+
     return Px, Py
-
-
-
-
 
 if __name__ == '__main__':
     main()
     # [(0, 0), (1, 1), (2, 2), (3, 3), (4, 3), (5, 4), (6, 5), (7, 6)]
-
-class MyApp(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle('Folium in PyQt Example')
-        self.window_width, self.window_height = 1200, 800
-        self.setMinimumSize(self.window_width, self.window_height)
-
-
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        for i in range(len(Px)):
-            print(Py[i], Px[i])
-
-
-        m = folium.Map(
-            location=[35.10434220341665, 129.0424975176498],
-            tiles='Stamen Terrain',
-            zoom_start=2
-            )
-        for i in range(len(Px)):
-            folium.Marker(
-                [Py[i], Px[i]],
-                popup='<b>path</b>',
-                icon=folium.Icon(color='green', icon='info-sign', angle=0, prefix='glyphicon')
-            ).add_to(m)
-
-
-        data = io.BytesIO()
-        m.save(data, close_file=False)
-
-        webView = QWebEngineView()
-        webView.setHtml(data.getvalue().decode())
-        layout.addWidget(webView)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    myApp = MyApp()
-    myApp.show()
-    try:
-        sys.exit(app.exec_())
-    except SystemExit:
-        print('Closing window...')
-
