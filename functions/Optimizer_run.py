@@ -28,7 +28,7 @@ class ThreadClass(QtCore.QThread):
         valuelist = []
         valuelist_in = []
         get_value = open('./resources/value.txt', 'r', encoding='utf-8')
-        for i in range(12):
+        for i in range(13):
             value = get_value.readline()
             valuelist.append(value)
             value_real = valuelist[i].strip()
@@ -48,6 +48,7 @@ class ThreadClass(QtCore.QThread):
         self.arrival_lon = valuelist_in[2]
         self.arrival_lat = valuelist_in[4]
         self.del_t = valuelist_in[11]
+        self.draught = valuelist_in[12]
 
         print(type(self.Node))
         Node = int(self.Node)
@@ -62,11 +63,12 @@ class ThreadClass(QtCore.QThread):
         arrival_lon = self.arrival_lon
         arrival_lat = self.arrival_lat
         del_t = int(self.del_t)
+        draught = self.draught
 
         #print(Node)
 
         problem = Linear4(Node, departure_lon, arrival_lon, departure_lat, arrival_lat,
-                          lower_bound_v, lower_bound_t, upper_bound_v, upper_bound_t, del_t)
+                          lower_bound_v, lower_bound_t, upper_bound_v, upper_bound_t, del_t, draught)
 
         algorithm = NSGAII(
             problem=problem,
@@ -83,13 +85,13 @@ class ThreadClass(QtCore.QThread):
         front = algorithm.get_result()
 
         # Save results to file
-        print_function_values_to_file(front, 'FUN3_부산_호치민_50000(node=40)_new_weather_FOC_test14.' + algorithm.get_name() + "-" + problem.get_name())
-        print_variables_to_file(front, 'VAR3_linear_부산_호치민_50000(node=40)_new_weather_FOC_test14.' + algorithm.get_name() + "-" + problem.get_name())
+        print_function_values_to_file(front, 'FUN3_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name())
+        print_variables_to_file(front, 'VAR3_linear_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name())
 
-        file_open = open('VAR3_linear_부산_호치민_50000(node=40)_new_weather_FOC_test14.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open = open('VAR3_linear_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                          encoding='utf-8')
 
-        file_open2 = open('FUN3_부산_호치민_50000(node=40)_new_weather_FOC_test14.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open2 = open('FUN3_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                           encoding='utf-8')
         obj_line = file_open2.readlines()
         obj = obj_line[0]
@@ -100,29 +102,16 @@ class ThreadClass(QtCore.QThread):
         word = line[-1].split(" ")
 
         distance_list = []
-
-        for i in range(int(self.Node / 2) - 1):
-            distance = float(word[2 * i]) * del_t * 1000
-            distance_list.append(distance)
-
-        x.append(departure_lon)
-        y.append(departure_lat)
-        for i in range(int(self.Node / 2) - 1):
-            next = vincenty_direct(y[i], x[i], float(word[2 * i + 1]), int(distance_list[i]))
-            x.append(next[1])
-            y.append(next[0])
-
-        x.append(arrival_lon)
-        y.append(arrival_lat)
+        distance_list2 = []
 
         v_list = []
         total_v = 0
-        del_t_list = []
+        self.del_t_list = []
         for i in range(int(self.Node / 2) - 1):
-            v_list.append(float(word[2 * i]))
+            v_list.append(float(word[i*2]))
         for i in v_list:
-            total_v += float(i)
-        total_v += float(word[-2])
+            total_v += i
+
 
         v_sort = sorted(v_list)
         v_sort_r = sorted(v_list, reverse=True)
@@ -134,14 +123,52 @@ class ThreadClass(QtCore.QThread):
             v_list[r] = v_sort[i]
 
         for i in v_list:
-            time = (i / total_v) * 120
-            del_t_list.append(time)
+            time = (i / total_v) * 115
+            self.del_t_list.append(time)
 
-        print(del_t_list)
+
+        for i in range(int(self.Node / 2) - 1): # -1 뺌
+            distance = float(word[i*2]) * self.del_t_list[i] * 1000
+            distance_list.append(distance)
+
+        x.append(departure_lon)
+        y.append(departure_lat)
+        for i in range(int(self.Node / 2) - 1):
+            next = vincenty_direct(y[i], x[i], float(word[2 * i + 1]), int(distance_list[i]))
+            x.append(next[1])
+            y.append(next[0])
+
+
+        x.append(arrival_lon)
+        y.append(arrival_lat)
+
+
+        v_list = []
+        total_v = 0
+        del_t_list = []
+        for i in range(int(self.Node / 2) - 1):
+            v_list.append(float(word[2 * i]))
+
+
+
 
 
         for i in range(len(x)):
             print(x[i], y[i])
+
+
+        for i in range(len(x)-1):
+            distance = vincenty((y[i],x[i]), (y[i+1], x[i+1]))
+            distance_list2.append(distance)
+
+
+        for i in range(len(v_list)):
+            del_t_list.append(distance_list2[i]/v_list[i])
+            total_v += del_t_list[i]
+
+        print(del_t_list)
+        print(total_v)
+
 
 
 
@@ -164,7 +191,7 @@ class ThreadClass2(QtCore.QThread):
         valuelist = []
         valuelist_in = []
         get_value = open('./resources/value.txt', 'r', encoding='utf-8')
-        for i in range(12):
+        for i in range(13):
             value = get_value.readline()
             valuelist.append(value)
             value_real = valuelist[i].strip()
@@ -176,6 +203,7 @@ class ThreadClass2(QtCore.QThread):
         self.departure_lat = valuelist_in[3]
         self.arrival_lon = valuelist_in[2]
         self.arrival_lat = valuelist_in[4]
+        self.draught = valuelist_in[12]
 
 
         departure_lon = self.departure_lon
@@ -184,7 +212,7 @@ class ThreadClass2(QtCore.QThread):
         arrival_lat = self.arrival_lat
         import Astar
         global Distance, TFOC, py, px
-        Astar.main(departure_lon, departure_lat, arrival_lat, arrival_lon)
+        Astar.main(departure_lon, departure_lat, arrival_lat, arrival_lon, self.draught)
         print(Astar.Px)
         for i in range(int((len(Astar.Py) - 1)/2)):
             py.append(Astar.Py[2 * i])
@@ -216,8 +244,7 @@ class ThreadClass2(QtCore.QThread):
         df_frame_Astar = pd.read_excel('./Dataset/test_astar.xlsx', header=0, sheet_name=None, engine='openpyxl')
         input_df_Astar = df_frame_Astar['FOC']
 
-        distance1 = 0
-        Draught = 15
+        Draught = self.draught
         for i in range(len(distance_list)):
             distance1 = + distance_list[i]
             times = int(((distance1 / (speed * 1.852)) / 6) + 1)

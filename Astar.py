@@ -9,8 +9,8 @@ import joblib
 df = pd.read_excel('./Dataset/Weather_information2.xlsx',  header=0, sheet_name=None, engine='openpyxl')
 df_frame = pd.read_excel('./Dataset/test_astar11.xlsx', header=0, sheet_name=None, engine='openpyxl')
 input_df = df_frame['FOC']
-model = load_model("./Models/FOCModels14-1")
-scaler_filename = "./Models/FOCModels14-1" + "/scaler.save"
+model = load_model("./Models/consumption_model11-3")
+scaler_filename = "./Models/consumption_model11-3" + "/scaler.save"
 scaler = joblib.load(scaler_filename)
 node1 = 0
 
@@ -33,7 +33,7 @@ def heuristic(node, goal, D=1, D2=2 ** 0.5):  # Diagonal Distance
     return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
 
 
-def aStar(maze, start, end):
+def aStar(maze, start, end, Draught):
     global df, input_df, model, scaler, aaa
     # startNode와 endNode 초기화
     startNode = Node(None, start)
@@ -120,16 +120,15 @@ def aStar(maze, start, end):
             end1 = -((child.position[0] - 399) / 10), ((child.position[1] + 1001) / 10)
             start1 = -((currentNode.position[0] - 399) / 10), ((currentNode.position[1] + 1001) / 10)
             distance = vincenty(start1, end1) * 2
-            speed = 15
-            Draught = 15
+            speed = 16.5
+            draught = Draught
             angle = functions.jin_buk_theta.jinbuk(start1[0], start1[1], end1[0], end1[1])
             time = distance/(speed * 1.825)
             times = int(((vincenty(departure, arrival) - vincenty(end1, arrival)) / (speed * 1.852)) / 6) +1
-            print(times)
             first_data = df['Weatherdata%d' % times]
             df2 = first_data.set_index('latitude & longitude')
             input_df.iloc[[0],[0]] = speed
-            input_df.iloc[[0],[1]] = Draught
+            input_df.iloc[[0],[1]] = draught
             input_df.iloc[[0],[2]] = angle
             input_df.iloc[[0],[3]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_speed']
             input_df.iloc[[0],[4]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_Direction']
@@ -172,7 +171,7 @@ def aStar(maze, start, end):
 
 Px = []
 Py = []
-def main(departure_lon, departure_lat, arrival_lat, arrival_lon):
+def main(departure_lon, departure_lat, arrival_lat, arrival_lon, draught):
 
     # 1은 장애물
 
@@ -187,7 +186,8 @@ def main(departure_lon, departure_lat, arrival_lat, arrival_lon):
     start = -int((int(start_lon*10) -399)), int((int(start_lat*10) - 1001))
     end = -int((int(end_lon*10) -399)), int((int(end_lat*10) - 1001))
 
-    path = aStar(maze, start, end)
+    Draught = draught
+    path = aStar(maze, start, end, Draught)
 
     for i in range(len(path)):
         py = -((path[i][0]-399) / 10)

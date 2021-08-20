@@ -27,6 +27,7 @@ departure_lat = 0
 arrival_lon = 0
 arrival_lat = 0
 del_t = 0
+draught = 0
 
 class MyWindow(QMainWindow, form_ui):
 
@@ -57,6 +58,7 @@ class MyWindow(QMainWindow, form_ui):
         self.population_size = 0
         self.Node = 0
         self.del_t = 0
+        self.draught = 0
         self.webView = QWebEngineView()
         self.m = folium.Map(
             location=[0, 0],
@@ -69,7 +71,7 @@ class MyWindow(QMainWindow, form_ui):
         self.verticalLayout.addWidget(self.webView)
 
     def Apply(self):
-        global Node, max_evaluations, population_size, departure_lon, arrival_lon, departure_lat, arrival_lat, lower_bound_v, lower_bound_t, upper_bound_v, upper_bound_t, del_t
+        global Node, max_evaluations, population_size, departure_lon, arrival_lon, departure_lat, arrival_lat, lower_bound_v, lower_bound_t, upper_bound_v, upper_bound_t, del_t, draught
         self.lb = []
         self.ub = []
         self.lower_bound = str(self.lowerbound.text())
@@ -84,6 +86,7 @@ class MyWindow(QMainWindow, form_ui):
         self.population_size = int(self.populationsize.text())
         self.Node = int(self.Node_line.text())
         self.del_t = float(self.populationsize_2.text())
+        self.draught = float(self.Draught_line.text())
         Node = self.Node
         lower_bound_v = self.lower_bound_v
         lower_bound_t = self.lower_bound_t
@@ -92,6 +95,7 @@ class MyWindow(QMainWindow, form_ui):
         max_evaluations = self.max_evaluations
         population_size = self.population_size
         del_t = self.del_t
+        draught = self.draught
 
 
         lat = (float(departure_lat) + float(arrival_lat)) / 2
@@ -119,6 +123,7 @@ class MyWindow(QMainWindow, form_ui):
         input_value.writelines(str(self.max_evaluations) + '\n')
         input_value.writelines(str(self.population_size) + '\n')
         input_value.writelines(str(self.del_t) + '\n')
+        input_value.writelines(str(self.draught) + '\n')
         input_value.close()
 
 

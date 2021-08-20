@@ -14,13 +14,13 @@ count = 0
 df = pd.read_excel('./Dataset/Weather_information2.xlsx')
 df_frame = pd.read_excel('./Dataset/testxl.xlsx', header=0, sheet_name=None, engine='openpyxl')
 input_df = df_frame['FOC']
-model = load_model("./Models/FOCModels14-1")
-scaler_filename = "./Models/FOCModels14-1" + "/scaler.save"
+model = load_model("./Models/consumption_model11-3")
+scaler_filename = "./Models/consumption_model11-3" + "/scaler.save"
 scaler = joblib.load(scaler_filename)
 
 class Linear4(FloatProblem):
 
-    def __init__(self, number_of_variables, x1, x2, y1, y2, lowerbound_v, lowerbound_t, upperbound_v, upperbound_t,del_t):
+    def __init__(self, number_of_variables, x1, x2, y1, y2, lowerbound_v, lowerbound_t, upperbound_v, upperbound_t, del_t, draught):
         super(Linear4, self).__init__()
         global df,input_df
         self.number_of_objectives = 1
@@ -38,6 +38,7 @@ class Linear4(FloatProblem):
         self.y = []
         self.del_t_list = []
         self.del_t_list2 = []
+        self.draught = draught
 
     def evaluate(self, solution: FloatSolution) -> FloatSolution:
         global df, input_df, model, scaler
@@ -63,7 +64,7 @@ class Linear4(FloatProblem):
             v_list[r] = v_sort[i]
 
         for i in v_list:
-            time = (i / total_v) * 115
+            time = (i / total_v) * 119.1439
             self.del_t_list.append(time)
 
 
@@ -91,7 +92,7 @@ class Linear4(FloatProblem):
 
 
         angle_list.append(last_angle)
-        self.del_t_list.append((last_distance/1000)/S[-2])
+        self.del_t_list.append(0.8571)
 
 
 
@@ -109,7 +110,7 @@ class Linear4(FloatProblem):
                 evalue_weather += 0
             else:
                 evalue_weather += 1
-        Draught = 15
+        Draught = self.draught
         if evalue_weather == 0:
             for k in range(len(self.x) - 1):
                 input_df.iloc[[k], [0]] = knot_velocity[k]

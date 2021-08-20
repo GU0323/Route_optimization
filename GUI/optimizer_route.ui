@@ -122,7 +122,7 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>270</y>
+      <y>450</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -187,7 +187,7 @@
    <widget class="QLabel" name="label_arr">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>180</x>
       <y>170</y>
       <width>71</width>
       <height>31</height>
@@ -314,10 +314,10 @@
     <widget class="QPushButton" name="start_button">
      <property name="geometry">
       <rect>
-       <x>96</x>
-       <y>32</y>
+       <x>95</x>
+       <y>29</y>
        <width>101</width>
-       <height>101</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="font">
@@ -376,10 +376,10 @@ background-image: url(./GUI/Start_Button.png);
      </property>
      <property name="geometry">
       <rect>
-       <x>108</x>
-       <y>14</y>
+       <x>104</x>
+       <y>6</y>
        <width>131</width>
-       <height>111</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="font">
@@ -403,8 +403,7 @@ background-image: url(./GUI/Start_Button.png);
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
-background-image:url(./GUI/weather_button.png);
-</string>
+background-image: url(./GUI/weather_button.png);</string>
      </property>
      <property name="text">
       <string/>
@@ -556,7 +555,7 @@ background-image:url(./GUI/weather_button.png);
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>100</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_8">
@@ -676,7 +675,7 @@ background-image:url(./GUI/weather_button.png);
       </font>
      </property>
      <property name="text">
-      <string>Time</string>
+      <string>Time:</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="populationsize_2">
@@ -698,7 +697,48 @@ background-image:url(./GUI/weather_button.png);
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>6</string>
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Malgun Gothic</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Draugt :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Draught_line">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>100</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Malgun Gothic</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -706,7 +746,7 @@ background-image:url(./GUI/weather_button.png);
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>550</y>
+      <y>710</y>
       <width>301</width>
       <height>131</height>
      </rect>
@@ -825,9 +865,6 @@ background-image:url(./GUI/weather_button.png);
      <property name="text">
       <string/>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_5">
@@ -865,8 +902,8 @@ background-image:url(./GUI/weather_button.png);
     <widget class="QPushButton" name="astar_button">
      <property name="geometry">
       <rect>
-       <x>104</x>
-       <y>39</y>
+       <x>107</x>
+       <y>37</y>
        <width>81</width>
        <height>81</height>
       </rect>
@@ -881,7 +918,7 @@ background-image:url(./GUI/weather_button.png);
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
-background-image:url(./GUI/Astar.png);
+background-image: url(./GUI/Astar.png);
 </string>
      </property>
      <property name="text">
@@ -896,7 +933,7 @@ background-image:url(./GUI/Astar.png);
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>370</y>
+      <y>560</y>
       <width>301</width>
       <height>131</height>
      </rect>
@@ -1015,10 +1052,245 @@ background-image:url(./GUI/Astar.png);
      <property name="text">
       <string/>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
     </widget>
+   </widget>
+   <widget class="QLabel" name="label_dep_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>260</y>
+      <width>231</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Malgun Gothic</family>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Departure Date/Time</string>
+    </property>
+   </widget>
+   <widget class="QDateEdit" name="D_dateEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>300</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+</string>
+    </property>
+    <property name="maximumDateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>59</minute>
+      <second>59</second>
+      <year>2050</year>
+      <month>12</month>
+      <day>31</day>
+     </datetime>
+    </property>
+    <property name="minimumDateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </datetime>
+    </property>
+    <property name="displayFormat">
+     <string>yyyy년 MM월 dd일</string>
+    </property>
+    <property name="calendarPopup">
+     <bool>true</bool>
+    </property>
+    <property name="date">
+     <date>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </date>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="D_timeEdit">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>300</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="wrapping">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="maximumDateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>59</minute>
+      <second>59</second>
+      <year>2050</year>
+      <month>12</month>
+      <day>31</day>
+     </datetime>
+    </property>
+    <property name="minimumDateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </datetime>
+    </property>
+    <property name="calendarPopup">
+     <bool>false</bool>
+    </property>
+    <property name="time">
+     <time>
+      <hour>12</hour>
+      <minute>0</minute>
+      <second>0</second>
+     </time>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_dep_3">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>350</y>
+      <width>231</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Malgun Gothic</family>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Arrival Date/Time</string>
+    </property>
+   </widget>
+   <widget class="QDateEdit" name="A_dateEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>390</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="maximumDateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>59</minute>
+      <second>59</second>
+      <year>2050</year>
+      <month>12</month>
+      <day>31</day>
+     </datetime>
+    </property>
+    <property name="minimumDateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </datetime>
+    </property>
+    <property name="displayFormat">
+     <string>yyyy년 MM월 dd일</string>
+    </property>
+    <property name="calendarPopup">
+     <bool>true</bool>
+    </property>
+    <property name="date">
+     <date>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </date>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="A_timeEdit">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>390</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="wrapping">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="maximumDateTime">
+     <datetime>
+      <hour>23</hour>
+      <minute>59</minute>
+      <second>59</second>
+      <year>2050</year>
+      <month>12</month>
+      <day>31</day>
+     </datetime>
+    </property>
+    <property name="minimumDateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2021</year>
+      <month>8</month>
+      <day>1</day>
+     </datetime>
+    </property>
+    <property name="calendarPopup">
+     <bool>true</bool>
+    </property>
+    <property name="currentSectionIndex">
+     <number>0</number>
+    </property>
+    <property name="time">
+     <time>
+      <hour>12</hour>
+      <minute>0</minute>
+      <second>0</second>
+     </time>
+    </property>
    </widget>
   </widget>
  </widget>
