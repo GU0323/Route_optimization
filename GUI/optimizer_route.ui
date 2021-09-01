@@ -659,52 +659,11 @@ background-image: url(./GUI/weather_button.png);</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="label_11">
+    <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
        <x>280</x>
        <y>80</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Malgun Gothic</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Time:</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="populationsize_2">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>80</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Malgun Gothic</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>100</y>
        <width>51</width>
        <height>16</height>
       </rect>
@@ -722,9 +681,9 @@ background-image: url(./GUI/weather_button.png);</string>
     <widget class="QLineEdit" name="Draught_line">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>100</y>
-       <width>111</width>
+       <x>420</x>
+       <y>80</y>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -1082,11 +1041,12 @@ background-image: url(./GUI/Astar.png);
       <x>30</x>
       <y>300</y>
       <width>121</width>
-      <height>31</height>
+      <height>30</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
 </string>
     </property>
     <property name="maximumDateTime">
@@ -1133,7 +1093,8 @@ background-image: url(./GUI/Astar.png);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="wrapping">
      <bool>false</bool>
@@ -1166,7 +1127,7 @@ background-image: url(./GUI/Astar.png);
     </property>
     <property name="time">
      <time>
-      <hour>12</hour>
+      <hour>0</hour>
       <minute>0</minute>
       <second>0</second>
      </time>
@@ -1204,7 +1165,8 @@ background-image: url(./GUI/Astar.png);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="maximumDateTime">
      <datetime>
@@ -1236,7 +1198,7 @@ background-image: url(./GUI/Astar.png);
      <date>
       <year>2021</year>
       <month>8</month>
-      <day>1</day>
+      <day>6</day>
      </date>
     </property>
    </widget>
@@ -1250,7 +1212,8 @@ background-image: url(./GUI/Astar.png);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
     </property>
     <property name="wrapping">
      <bool>false</bool>
@@ -1286,7 +1249,7 @@ background-image: url(./GUI/Astar.png);
     </property>
     <property name="time">
      <time>
-      <hour>12</hour>
+      <hour>0</hour>
       <minute>0</minute>
       <second>0</second>
      </time>

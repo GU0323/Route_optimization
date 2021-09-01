@@ -179,17 +179,22 @@ class MyWindow(QMainWindow, form_ui):
         departure = departure_lat, departure_lon
         arrival = arrival_lat, arrival_lon
         self.progressBar.reset()
+        bigger = 0
         while (True):
             from Astar import node1
             if node1 == 0:
                 count_g = 0
             else:
+                # 카운트의 최대값을 prgress bar 의 value로 설정 (bigger 변수 추가)
                 count_g = int((100 / vincenty(departure, arrival)) * (vincenty(departure, arrival) - node1))
-            self.progressBar.setValue(count_g)
+                if count_g > bigger:
+                    bigger = count_g
+                else:
+                    pass
+            self.progressBar.setValue(bigger)
             QApplication.processEvents()
-            self.sleep(30)
-            print(count_g)
             if count_g >= 99:
+                self.sleep(60)
                 self.progressBar.setValue(100)
                 break
         while (True):
@@ -296,17 +301,17 @@ class MyWindow(QMainWindow, form_ui):
     def loadweather(self):
         global Wave_array, Node, max_evaluations, population_size, departure_lon, arrival_lon, departure_lat, arrival_lat, lower_bound_v, lower_bound_t, upper_bound_v, upper_bound_t
         # # polyon
-        for k in range(50):
-            for u in range(50):
-                k_2 = k
-                u_2 = u
-                if Wave_array[k_2, u_2] <= 1:
+        for k in range(25):
+            for u in range(25):
+                k_2 = k * 2
+                u_2 = u * 2
+                if Wave_array[k_2, u_2] <= 3:
                     pass
                 elif Wave_array[k_2, u_2] < 10:
                     k1 = 40 - k_2
-                    k2 = 39 - k_2
+                    k2 = 38.5 - k_2
                     u1 = 100 + u_2
-                    u2 = 101 + u_2
+                    u2 = 101.5 + u_2
                     folium.Polygon(
                         locations=[(k1, u1), (k1, u2), (k2, u2), (k2, u1)],
                         fill=True,
@@ -316,9 +321,9 @@ class MyWindow(QMainWindow, form_ui):
                     ).add_to(self.m)
                 elif Wave_array[k_2, u_2] < 20:
                     k1 = 40 - k_2
-                    k2 = 39 - k_2
+                    k2 = 38.5 - k_2
                     u1 = 100 + u_2
-                    u2 = 101 + u_2
+                    u2 = 101.5 + u_2
                     folium.Polygon(
                         locations=[(k1, u1), (k1, u2), (k2, u2), (k2, u1)],
                         fill=True,
@@ -328,9 +333,9 @@ class MyWindow(QMainWindow, form_ui):
                     ).add_to(self.m)
                 elif Wave_array[k_2, u_2] < 30:
                     k1 = 40 - k_2
-                    k2 = 39 - k_2
+                    k2 = 38.5 - k_2
                     u1 = 100 + u_2
-                    u2 = 101 + u_2
+                    u2 = 101.5 + u_2
                     folium.Polygon(
                         locations=[(k1, u1), (k1, u2), (k2, u2), (k2, u1)],
                         fill=True,
@@ -340,9 +345,9 @@ class MyWindow(QMainWindow, form_ui):
                     ).add_to(self.m)
                 elif Wave_array[k_2, u_2] < 40:
                     k1 = 40 - k_2
-                    k2 = 39 - k_2
+                    k2 = 38.5 - k_2
                     u1 = 100 + u_2
-                    u2 = 101 + u_2
+                    u2 = 101.5 + u_2
                     folium.Polygon(
                         locations=[(k1, u1), (k1, u2), (k2, u2), (k2, u1)],
                         fill=True,
@@ -350,11 +355,11 @@ class MyWindow(QMainWindow, form_ui):
                         color='#f58320',
                         stroke=False
                     ).add_to(self.m)
-                elif Wave_array[k_2, u_2] < 50:
+                elif Wave_array[k_2, u_2] >= 40:
                     k1 = 40 - k_2
-                    k2 = 39 - k_2
+                    k2 = 38.5 - k_2
                     u1 = 100 + u_2
-                    u2 = 101 + u_2
+                    u2 = 101.5 + u_2
                     folium.Polygon(
                         locations=[(k1, u1), (k1, u2), (k2, u2), (k2, u1)],
                         fill=True,
@@ -470,5 +475,6 @@ if __name__ == "__main__":
     myWindow = MyWindow()
     myWindow.show()
     app.exec_()
+
 
 

@@ -84,13 +84,13 @@ class ThreadClass(QtCore.QThread):
         front = algorithm.get_result()
 
         # Save results to file
-        print_function_values_to_file(front, 'FUN3_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name())
-        print_variables_to_file(front, 'VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name())
+        print_function_values_to_file(front, 'FUN3_부산_호치민_(node=40)_new_model_FOC_날씨.' + algorithm.get_name() + "-" + problem.get_name())
+        print_variables_to_file(front, 'VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨.' + algorithm.get_name() + "-" + problem.get_name())
 
-        file_open = open('VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open = open('VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                          encoding='utf-8')
 
-        file_open2 = open('FUN3_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open2 = open('FUN3_부산_호치민_(node=40)_new_model_FOC_날씨.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                           encoding='utf-8')
         obj_line = file_open2.readlines()
         obj = obj_line[0]
@@ -213,42 +213,38 @@ class ThreadClass2(QtCore.QThread):
         import Astar
         global Distance, TFOC, py, px
         Astar.main(departure_lon, departure_lat, arrival_lat, arrival_lon, self.draught)
-        print(Astar.Px)
         for i in range(int((len(Astar.Py) - 1)/2)):
             py.append(Astar.Py[2 * i])
             px.append(Astar.Px[2 * i])
 
         angle_list = []
         distance_list = []
-        distance_list_first = []
-        speed = 15
+        speed = 16.5
         time = []
-
-        for i in range(len(Astar.Px) - 1):
-            a = (Astar.Py[i], Astar.Px[i])
-            b = (Astar.Py[i + 1], Astar.Px[i + 1])
-            distance_list_first.append(vincenty(a, b))
-
-        for i in range(int((len(distance_list_first) / 2) - 1)):
-            distance = distance_list_first[i] + distance_list_first[i + 1]
-            distance_list.append(distance)
-            Distance += distance
-
-        for i in range(len(distance_list)):
-            time.append(distance_list[i] / (speed * 1.825))
 
         for i in range(len(px) - 1):
             angle_astar = functions.jin_buk_theta.jinbuk(py[i], px[i], py[i + 1], px[i + 1])
             angle_list.append(angle_astar)
 
+        for i in range(len(px) - 1):
+            a = (py[i], px[i])
+            b = (py[i + 1], px[i + 1])
+            distance_list.append(vincenty(a, b))
+            Distance += vincenty(a, b)
+
+        for i in range(len(distance_list)):
+            time.append(distance_list[i] / (speed * 1.825))
+
         df_frame_Astar = pd.read_excel('./Dataset/test_astar.xlsx', header=0, sheet_name=None, engine='openpyxl')
         input_df_Astar = df_frame_Astar['FOC']
-
         Draught = self.draught
         for i in range(len(distance_list)):
             distance1 = + distance_list[i]
-            times = int(((distance1 / (speed * 1.852)) / 6) + 1)
-            data = Astar.df['Weatherdata%d' % times]
+            times = int(((distance1 / (16.5 * 1.852)) / 6) + 1)
+            if times <= 24 :
+                data = Astar.df['Weatherdata%d' % times]
+            else:
+                data = Astar.df['Weatherdata24']
             df2 = data.set_index('latitude & longitude')
             input_df_Astar.iloc[[i],[0]] = speed
             input_df_Astar.iloc[[i],[1]] = Draught
@@ -258,7 +254,7 @@ class ThreadClass2(QtCore.QThread):
             input_df_Astar.iloc[[i],[5]] = df2.loc['{}:{}'.format(int(py[i]), int(px[i])), 'Wave_Height']
             input_df_Astar.iloc[[i],[6]] = df2.loc['{}:{}'.format(int(py[i]), int(px[i])), 'Wave_Direction']
             input_df_Astar.iloc[[i],[7]] = df2.loc['{}:{}'.format(int(py[i]), int(px[i])), 'Wave_Frequency']
-            input_df_Astar.iloc[[i],[8]] = time[i]
+            input_df_Astar.iloc[[i],[8]] = 1
 
         featureList = ['Speed2', 'Draught', 'Course', 'WindSpeed', 'WindDirectionDeg', 'WaveHeight', 'WaveDirection',
                        'WavePeriod','Time']
@@ -268,15 +264,11 @@ class ThreadClass2(QtCore.QThread):
         Foc_Time = preds.flatten()
         Foc = []
         for i in range(len(time)):
-            Foc.append((Foc_Time[i] * time[i]))
-
-        for i in range(len(Foc)):
-            input_df_Astar.iloc[[i], [8]] = Foc[i]
-
+            Foc.append(Foc_Time[i]*time[i])
+        time_all = 0
+        for i in range(len(time)):
+            time_all += time[i]
         for i in range(len(distance_list)):
             TFOC += Foc[i]
-
-        print('end')
         return
-
 

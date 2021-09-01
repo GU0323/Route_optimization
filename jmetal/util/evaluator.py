@@ -32,8 +32,8 @@ class Evaluator(Generic[S], ABC):
 class SequentialEvaluator(Evaluator[S]):
 
     def evaluate(self, solution_list: List[S], problem: Problem) -> List[S]:
-        file_open = open('./resources/VAR3_linear_부산_호치민_50000(node=40)_new_weather_FOC_test14.NSGAII-Linear4', 'r',
-                         encoding='utf-8')
+
+        file_open = open('./resources/VAR3_linear_부산_호치민_(node=40)_new_model_FOC_제약추가.NSGAII-Linear4', 'r', encoding='utf-8')
         line = file_open.readlines()
         word = line[0].split(' ')
         file_open.close()
