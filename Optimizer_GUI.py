@@ -12,6 +12,7 @@ import numpy as np
 from PyQt5.QtGui import QIcon
 from functions.jin_buk_theta import jinbuk
 from vincenty import vincenty
+from datetime import datetime
 
 Wave_array = np.load('./resources/mapImage/Wave_Heigt_gird.npy')
 form_ui = uic.loadUiType("./GUI/optimizer_route.ui")[0]
@@ -59,6 +60,10 @@ class MyWindow(QMainWindow, form_ui):
         self.Node = 0
         self.del_t = 0
         self.draught = 0
+        self.D_dateVar = None
+        self.A_dateVar = None
+        self.D_timeVar = None
+        self.A_timeVar = None
         self.webView = QWebEngineView()
         self.m = folium.Map(
             location=[0, 0],
@@ -85,7 +90,7 @@ class MyWindow(QMainWindow, form_ui):
         self.max_evaluations = int(self.maxevaluations.text())
         self.population_size = int(self.populationsize.text())
         self.Node = int(self.Node_line.text())
-        self.del_t = float(self.populationsize_2.text())
+        self.del_t = 0
         self.draught = float(self.Draught_line.text())
         Node = self.Node
         lower_bound_v = self.lower_bound_v
@@ -96,6 +101,44 @@ class MyWindow(QMainWindow, form_ui):
         population_size = self.population_size
         del_t = self.del_t
         draught = self.draught
+        self.D_dateVar = self.D_dateEdit.date()
+        self.A_dateVar = self.A_dateEdit.date()
+        self.D_timeVar = self.D_timeEdit.time()
+        self.A_timeVar = self.A_timeEdit.time()
+        strip_D_date = str(self.D_dateVar).strip('PyQt5.QtCore.QDate()')
+        strip_D_time = str(self.D_timeVar).strip('PyQt5.QtCore.QTime()')
+        strip_A_date = str(self.A_dateVar).strip('PyQt5.QtCore.QDate()')
+        strip_A_time = str(self.A_timeVar).strip('PyQt5.QtCore.QTime()')
+        print(strip_D_date, strip_D_time)
+        print(strip_A_date, strip_A_time)
+        D_date_split = strip_D_date.split(',')
+        D_time_split = strip_D_time.split(',')
+        A_date_split = strip_A_date.split(',')
+        A_time_split = strip_A_time.split(',')
+        D_time = []
+        A_time = []
+        for i in D_date_split:
+            D_time.append(int(i))
+        for i in A_date_split:
+            A_time.append(int(i))
+        for i in D_time_split:
+            D_time.append(int(i))
+        for i in A_time_split:
+            A_time.append(int(i))
+        print(tuple(D_time))
+        print(tuple(A_time))
+        D_time = tuple(D_time)
+        A_time = tuple(A_time)
+        time1 = datetime(int(D_time[0]), int(D_time[1]), int(D_time[2]), int(D_time[3]), int(D_time[4]))
+        time2 = datetime(int(A_time[0]), int(A_time[1]), int(A_time[2]), int(A_time[3]), int(A_time[4]))
+        print(time1)
+        print(time2)
+        #time1 = datetime(2020, 5, 17, 20, 0, 0)
+        #time2 = datetime(2021, 5, 20, 10, 0, 2)
+        time_diff = time2-time1
+        print(time_diff)
+        print((time_diff.days*24)+(time_diff.seconds/3600))
+        self.del_t = int((time_diff.days*24)+(time_diff.seconds/3600))
 
 
         lat = (float(departure_lat) + float(arrival_lat)) / 2

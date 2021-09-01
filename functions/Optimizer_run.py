@@ -5,7 +5,6 @@ from jmetal.util.comparator import DominanceComparator
 from jmetal.util.solution import print_function_values_to_file, print_variables_to_file
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from functions.defined_problem import Linear4
-from math import cos, sin
 from vincenty import vincenty
 import functions.jin_buk_theta
 import numpy as np
@@ -85,13 +84,13 @@ class ThreadClass(QtCore.QThread):
         front = algorithm.get_result()
 
         # Save results to file
-        print_function_values_to_file(front, 'FUN3_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name())
-        print_variables_to_file(front, 'VAR3_linear_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name())
+        print_function_values_to_file(front, 'FUN3_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name())
+        print_variables_to_file(front, 'VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name())
 
-        file_open = open('VAR3_linear_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open = open('VAR3_linear_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                          encoding='utf-8')
 
-        file_open2 = open('FUN3_부산_호치민_50000(node=60)_new_model_FOC.' + algorithm.get_name() + "-" + problem.get_name(), 'r',
+        file_open2 = open('FUN3_부산_호치민_(node=40)_new_model_FOC_날씨테스트(밑).' + algorithm.get_name() + "-" + problem.get_name(), 'r',
                           encoding='utf-8')
         obj_line = file_open2.readlines()
         obj = obj_line[0]
@@ -99,12 +98,13 @@ class ThreadClass(QtCore.QThread):
         file_open2.close()
 
         line = file_open.readlines()
-        word = line[-1].split(" ")
+        word = line[0].split(" ")
 
         distance_list = []
         distance_list2 = []
 
         v_list = []
+        '''
         total_v = 0
         self.del_t_list = []
         for i in range(int(self.Node / 2) - 1):
@@ -125,10 +125,10 @@ class ThreadClass(QtCore.QThread):
         for i in v_list:
             time = (i / total_v) * 115
             self.del_t_list.append(time)
-
+        '''
 
         for i in range(int(self.Node / 2) - 1): # -1 뺌
-            distance = float(word[i*2]) * self.del_t_list[i] * 1000
+            distance = float(word[i*2]) * 6 * 1000
             distance_list.append(distance)
 
         x.append(departure_lon)
@@ -142,12 +142,13 @@ class ThreadClass(QtCore.QThread):
         x.append(arrival_lon)
         y.append(arrival_lat)
 
-
+        total_time = 0
         v_list = []
         total_v = 0
         del_t_list = []
-        for i in range(int(self.Node / 2) - 1):
+        for i in range(int(self.Node / 2)):
             v_list.append(float(word[2 * i]))
+
 
 
 
@@ -164,11 +165,10 @@ class ThreadClass(QtCore.QThread):
 
         for i in range(len(v_list)):
             del_t_list.append(distance_list2[i]/v_list[i])
-            total_v += del_t_list[i]
+            total_time += del_t_list[i]
 
         print(del_t_list)
-        print(total_v)
-
+        print(total_time)
 
 
 

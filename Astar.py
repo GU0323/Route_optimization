@@ -9,8 +9,8 @@ import joblib
 df = pd.read_excel('./Dataset/Weather_information2.xlsx',  header=0, sheet_name=None, engine='openpyxl')
 df_frame = pd.read_excel('./Dataset/test_astar11.xlsx', header=0, sheet_name=None, engine='openpyxl')
 input_df = df_frame['FOC']
-model = load_model("./Models/consumption_model11-3")
-scaler_filename = "./Models/consumption_model11-3" + "/scaler.save"
+model = load_model("./Models/consumption_model_42000-2")
+scaler_filename = "./Models/consumption_model_42000-2" + "/scaler.save"
 scaler = joblib.load(scaler_filename)
 node1 = 0
 
