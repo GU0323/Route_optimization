@@ -824,6 +824,9 @@ background-image: url(./GUI/weather_button.png);</string>
      <property name="text">
       <string/>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_5">
@@ -1010,6 +1013,9 @@ background-image: url(./GUI/Astar.png);
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

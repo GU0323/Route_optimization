@@ -7,7 +7,7 @@ import joblib
 
 
 df = pd.read_excel('./Dataset/Weather_information2.xlsx',  header=0, sheet_name=None, engine='openpyxl')
-df_frame = pd.read_excel('./Dataset/test_astar11.xlsx', header=0, sheet_name=None, engine='openpyxl')
+df_frame = pd.read_excel('./Dataset/test_astar.xlsx', header=0, sheet_name=None, engine='openpyxl')
 input_df = df_frame['FOC']
 model = load_model("./Models/consumption_model_42000-2")
 scaler_filename = "./Models/consumption_model_42000-2" + "/scaler.save"
@@ -79,10 +79,7 @@ def aStar(maze, start, end, Draught):
 
         children = []
         # 인접한 xy좌표 전부
-        for newPosition in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1)]:
-            #[(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1)]:
-            # (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (1, 1), (-1, 1),
-            # (0, -2), (-2, 0), (2, 0), (-2, -2), (2, -2), (-2, -1), (-1, -2), (1, -2), (2, -1)
+        for newPosition in [(-2, 2),(2, 2), (2, -2), (-2, -2),(-1, 2) , (0, 2), (1, 2), (-2, -1), (2, -1), (-1, -2), (0, -2), (1, -2), (2, 0), (-2, 0), (2, 1), (-2, 1)]:
 
             # 노드 위치 업데이트
             nodePosition = (
@@ -106,62 +103,62 @@ def aStar(maze, start, end, Draught):
 
             new_node = Node(currentNode, nodePosition)
             children.append(new_node)
-
-        # 자식들 모두 loop
+        child_list = []
         for child in children:
 
             # 자식이 closedList에 있으면 continue
             if child in closedList:
                 continue
-
-            # f, g, h값 업데이트
+            child_list.append(child.position)
+        draught = Draught
+        for i in range(len(child_list)):
             departure = -((startNode.position[0] - 399) / 10), ((startNode.position[1] + 1001) / 10)
+            start1 = -((currentNode.position[0] - 399) / 10), ((currentNode.position[1] + 1001) / 10)
+            end1 = -((child_list[i][0] - 399) / 10), ((child_list[i][1] + 1001) / 10)
             arrival = -((endNode.position[0] - 399) / 10), ((endNode.position[1] + 1001) / 10)
+            angle = functions.jin_buk_theta.jinbuk(start1[0], start1[1], end1[0], end1[1])
+            times = int(((vincenty(departure, arrival) - vincenty(end1, arrival)) / (16.5 * 1.852)) / 6) +1
+            if times < 1:
+                first_data = df['Weatherdata1']
+            elif times <=24 :
+                first_data = df['Weatherdata%d' % times]
+            else:
+                first_data = df['Weatherdata24']
+            df2 = first_data.set_index('latitude & longitude')
+            input_df.iloc[[i], [0]] = 16.5
+            input_df.iloc[[i], [1]] = draught
+            input_df.iloc[[i], [2]] = angle
+            input_df.iloc[[i], [3]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_speed']
+            input_df.iloc[[i], [4]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_Direction']
+            input_df.iloc[[i], [5]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Height']
+            input_df.iloc[[i], [6]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Direction']
+            input_df.iloc[[i], [7]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Frequency']
+            input_df.iloc[[i], [8]] = 1
+
+        featureList = ['Speed2', 'Draught', 'Course', 'WindSpeed', 'WindDirectionDeg', 'WaveHeight', 'WaveDirection',
+                           'WavePeriod', 'Time']
+        trainContinuous = scaler.transform(input_df[featureList])
+        testX = np.hstack([trainContinuous])
+        preds = model.predict(testX)
+        i = -1
+        # 자식들 모두 loop
+        for child in children:
+            # 자식이 closedList에 있으면 continue
+            if child in closedList:
+                continue
+            i += 1
+            # f, g, h값 업데이트
             end1 = -((child.position[0] - 399) / 10), ((child.position[1] + 1001) / 10)
             start1 = -((currentNode.position[0] - 399) / 10), ((currentNode.position[1] + 1001) / 10)
+            arrival = -((endNode.position[0] - 399) / 10), ((endNode.position[1] + 1001) / 10)
+
             distance = vincenty(start1, end1) * 2
-            speed = 16.5
-            draught = Draught
-            angle = functions.jin_buk_theta.jinbuk(start1[0], start1[1], end1[0], end1[1])
-            time = distance/(speed * 1.825)
-            times = int(((vincenty(departure, arrival) - vincenty(end1, arrival)) / (speed * 1.852)) / 6) +1
-            first_data = df['Weatherdata%d' % times]
-            df2 = first_data.set_index('latitude & longitude')
-            input_df.iloc[[0],[0]] = speed
-            input_df.iloc[[0],[1]] = draught
-            input_df.iloc[[0],[2]] = angle
-            input_df.iloc[[0],[3]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_speed']
-            input_df.iloc[[0],[4]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wind_Direction']
-            input_df.iloc[[0],[5]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Height']
-            input_df.iloc[[0],[6]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Direction']
-            input_df.iloc[[0],[7]] = df2.loc['{}:{}'.format(int(end1[0]), int(end1[1])), 'Wave_Frequency']
-            input_df.iloc[[0],[8]] = time
-
-            featureList = ['Speed2', 'Draught' , 'Course', 'WindSpeed', 'WindDirectionDeg', 'WaveHeight', 'WaveDirection', 'WavePeriod',
-                                'Time']
-
-            trainContinuous = scaler.transform(input_df[featureList])
-            testX = np.hstack([trainContinuous])
-            preds = model.predict(testX)
-            FOC_time = preds.flatten()
-            Foc = FOC_time * time
-
-            child.g = currentNode.g - Foc
-            # child.h = ((child.position[0] - endNode.position[0]) **
-            #            2) + ((child.position[1] - endNode.position[1]) ** 2)
-
-            child.h = vincenty(end1, arrival)
+            time = distance / (16.5 * 1.825)
+            child.g = (currentNode.g + abs(preds.flatten()[i] * time))
+            child.h = vincenty(end1, arrival) / 5
             global node1
             node1 = vincenty(start1, arrival)
-
-            # 다른 휴리스틱
-            # print("position:", child.position) 거리 추정 값 보기
-            # print("from child to goal:", child.h)
-
             child.f = child.g + child.h
-
-
-
             # 자식이 openList에 있으고, g값이 더 크면 continue
             if len([openNode for openNode in openList
                     if child == openNode and child.g > openNode.g]) > 0:
