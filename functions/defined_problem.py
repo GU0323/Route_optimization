@@ -4,10 +4,10 @@ from jmetal.core.problem import FloatProblem
 from jmetal.core.solution import FloatSolution
 from vincenty import vincenty
 import pandas as pd
-from tensorflow.keras.models import load_model
 import joblib
 from functions.jin_buk_theta import jinbuk
 from functions.vincenty_direct import vincenty_direct
+from tensorflow.keras.models import load_model
 
 maze = np.load('./resources/mapImage/maparray.npy')
 count = 0

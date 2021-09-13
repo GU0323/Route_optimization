@@ -9,3 +9,10 @@ pip install matplotlib
 pip install pyqt5
 pip install pyqtwebengine
 pip install jmetalpy
+pip install vincenty
+pip install joblib
+pip install tensorflow==2.4
+pip install openpyxl
+pip install scikit-learn <- 여기에서 버전이 안맞는지 에러가 남.
+ModuleNotFoundError: No module named 'sklearn.preprocessing.data'
+
